@@ -105,28 +105,30 @@ def build_empty_digest(date: str) -> str:
 
 
 def send_email(html_content: str, subject: str) -> bool:
-    """Send email via SMTP (SSL or STARTTLS based on SMTP_USE_SSL config)."""
+    """Send email via SMTP to all recipients in RECEIVER_EMAIL list."""
     try:
-        msg = MIMEMultipart("alternative")
-        msg["From"] = SENDER_EMAIL
-        msg["To"] = RECEIVER_EMAIL
-        msg["Subject"] = subject
+        for recipient in RECEIVER_EMAIL:
+            msg = MIMEMultipart("alternative")
+            msg["From"] = SENDER_EMAIL
+            msg["To"] = recipient
+            msg["Subject"] = subject
 
-        part = MIMEText(html_content, "html", "utf-8")
-        msg.attach(part)
+            part = MIMEText(html_content, "html", "utf-8")
+            msg.attach(part)
 
-        if SMTP_USE_SSL:
-            server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
-        else:
-            server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-            server.starttls()
-        server.login(SENDER_EMAIL, SENDER_PASSWORD)
-        server.send_message(msg)
-        server.quit()
+            if SMTP_USE_SSL:
+                server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
+            else:
+                server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+                server.starttls()
+            server.login(SENDER_EMAIL, SENDER_PASSWORD)
+            server.send_message(msg)
+            server.quit()
         return True
     except Exception as e:
         print(f"邮件发送失败: {e}")
         return False
+
 
 
 

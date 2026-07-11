@@ -69,4 +69,5 @@ else:
 # ===============================================
 SENDER_EMAIL = os.getenv("SENDER_EMAIL", "")
 SENDER_PASSWORD = os.getenv("SENDER_PASSWORD", "")
-RECEIVER_EMAIL = os.getenv("RECEIVER_EMAIL", os.getenv("SENDER_EMAIL", ""))
+RECEIVER_EMAIL = [e.strip() for e in os.getenv("RECEIVER_EMAIL", os.getenv("SENDER_EMAIL", "")).split(",") if e.strip()]
+
