@@ -1,4 +1,4 @@
-﻿"""Literature Digest - Daily PubMed Literature Digest Pipeline"""
+"""Literature Digest - Daily PubMed Literature Digest Pipeline"""
 import logging
 import os
 import sys
@@ -13,7 +13,7 @@ from config import (
 )
 from pubmed_fetcher import fetch_daily_papers
 from translator import translate_abstracts
-from mail_sender import build_html_digest, send_email
+from mail_sender import build_html_digest, build_empty_digest, send_email
 
 
 def setup_logging() -> logging.Logger:
@@ -62,6 +62,26 @@ def clean_old_logs(log_dir: str, retention_days: int = 7) -> None:
                 continue
 
 
+def send_digest_email(html_content: str, subject: str, logger: logging.Logger) -> bool:
+    """Send email with retry (max 2 attempts)."""
+    max_attempts = 2
+    for attempt in range(1, max_attempts + 1):
+        logger.info("Sending email (attempt %d/%d)...", attempt, max_attempts)
+        success = send_email(html_content, subject)
+
+        if success:
+            logger.info("Email sent successfully: %s", subject)
+            return True
+        else:
+            logger.error("Email sending failed (attempt %d)", attempt)
+            if attempt < max_attempts:
+                logger.info("Retrying in 10 seconds...")
+                time.sleep(10)
+
+    logger.critical("All email attempts failed.")
+    return False
+
+
 def main() -> None:
     """Main pipeline for the daily literature digest."""
     logger = setup_logging()
@@ -75,8 +95,15 @@ def main() -> None:
     logger.info("Fetching papers from PubMed...")
     papers = fetch_daily_papers()
 
+    date_str = datetime.now().strftime("%Y-%m-%d")
+    subject = EMAIL_SUBJECT_TEMPLATE.format(date=date_str)
+
     if not papers:
-        logger.warning("No new papers found. Exiting.")
+        logger.info("No new papers found. Sending empty notification...")
+        html_content = build_empty_digest(date_str)
+        if not send_digest_email(html_content, subject, logger):
+            sys.exit(1)
+        logger.info("=== Literature Digest Complete (no papers) ===")
         return
 
     logger.info("Fetched %d papers", len(papers))
@@ -90,29 +117,12 @@ def main() -> None:
         logger.info("Translation disabled (TRANSLATE_ENABLED=False)")
 
     # Build HTML digest
-    date_str = datetime.now().strftime("%Y-%m-%d")
-    subject = EMAIL_SUBJECT_TEMPLATE.format(date=date_str)
-
     logger.info("Building HTML digest...")
     html_content = build_html_digest(papers, date_str)
     logger.info("HTML digest built (%d bytes)", len(html_content))
 
-    # Send email with retry
-    max_attempts = 2
-    for attempt in range(1, max_attempts + 1):
-        logger.info("Sending email (attempt %d/%d)...", attempt, max_attempts)
-        success = send_email(html_content, subject)
-
-        if success:
-            logger.info("Email sent successfully: %s", subject)
-            break
-        else:
-            logger.error("Email sending failed (attempt %d)", attempt)
-            if attempt < max_attempts:
-                logger.info("Retrying in 10 seconds...")
-                time.sleep(10)
-    else:
-        logger.critical("All email attempts failed. Exiting.")
+    # Send email
+    if not send_digest_email(html_content, subject, logger):
         sys.exit(1)
 
     logger.info("=== Literature Digest Complete ===")

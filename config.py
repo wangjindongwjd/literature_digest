@@ -23,3 +23,4 @@ LOG_RETENTION_DAYS = 7
 # 邮件主题模板
 EMAIL_SUBJECT_TEMPLATE = "\U0001f4ec 传粉方向文献日报 - {date}"
 
+
