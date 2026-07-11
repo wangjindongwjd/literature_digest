@@ -1,4 +1,4 @@
-﻿# 📬 PubMed Literature Daily Digest
+# 📬 PubMed Literature Daily Digest
 
 Automated daily literature digest — fetch the latest papers from PubMed, build a formatted HTML email, and push it to your inbox on a schedule.
 
@@ -11,8 +11,8 @@ Powered by the free NCBI Entrez API (no API key required) and googletrans for op
 ### 1. Clone or download
 
 ```bash
-git clone https://github.com/wangjindongwjd/wangjind.git
-cd wangjind/literature_digest
+git clone https://github.com/wangjindongwjd/literature_digest.git
+cd literature_digest
 ```
 
 Or download ZIP from GitHub and unzip.
@@ -177,3 +177,4 @@ literature_digest/
 ## 📄 License
 
 MIT — free to use, modify, and share.
+
