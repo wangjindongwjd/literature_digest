@@ -109,7 +109,7 @@ def build_empty_digest(date: str) -> str:
 
 
 def send_email(html_content: str, subject: str) -> bool:
-    """通过 QQ邮箱 SMTP 发送邮件"""
+    """Send email via SMTP (SSL or STARTTLS based on SMTP_USE_SSL config)."""
     try:
         msg = MIMEMultipart("alternative")
         msg["From"] = SENDER_EMAIL
@@ -119,7 +119,11 @@ def send_email(html_content: str, subject: str) -> bool:
         part = MIMEText(html_content, "html", "utf-8")
         msg.attach(part)
 
-        server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
+        if SMTP_USE_SSL:
+            server = smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT)
+        else:
+            server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+            server.starttls()
         server.login(SENDER_EMAIL, SENDER_PASSWORD)
         server.send_message(msg)
         server.quit()
@@ -127,4 +131,5 @@ def send_email(html_content: str, subject: str) -> bool:
     except Exception as e:
         print(f"邮件发送失败: {e}")
         return False
+
 
