@@ -3,11 +3,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-SMTP_SERVER = "smtp.qq.com"
-SMTP_PORT = 465
-SENDER_EMAIL = "2747245989@qq.com"
-SENDER_PASSWORD = "jpdbqzuatsczdgha"
-RECEIVER_EMAIL = "2747245989@qq.com"
+from config import SMTP_SERVER, SMTP_PORT, SMTP_USE_SSL, SENDER_EMAIL, SENDER_PASSWORD, RECEIVER_EMAIL
 
 
 def build_html_digest(papers: list[dict], date: str) -> str:
@@ -131,5 +127,6 @@ def send_email(html_content: str, subject: str) -> bool:
     except Exception as e:
         print(f"邮件发送失败: {e}")
         return False
+
 
 
