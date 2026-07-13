@@ -16,9 +16,13 @@ if _ENV_FILE.exists():
             if not _line or _line.startswith("#") or "=" not in _line:
                 continue
             _key, _, _value = _line.partition("=")
-            _key, _value = _key.strip(), _value.strip().strip("'").strip('"')
-            if _key and _key not in os.environ:
-                os.environ[_key] = _value
+            _key, _value = _key.strip(), _value.strip()
+            if not _key or _key in os.environ:
+                continue
+            if len(_value) >= 2:
+                if (_value[0] == _value[-1] == '"') or (_value[0] == _value[-1] == "'"):
+                    _value = _value[1:-1]
+            os.environ[_key] = _value
 
 # ===============================================
 # PubMed 检索
@@ -70,4 +74,5 @@ else:
 SENDER_EMAIL = os.getenv("SENDER_EMAIL", "")
 SENDER_PASSWORD = os.getenv("SENDER_PASSWORD", "")
 RECEIVER_EMAIL = [e.strip() for e in os.getenv("RECEIVER_EMAIL", os.getenv("SENDER_EMAIL", "")).split(",") if e.strip()]
+
 
