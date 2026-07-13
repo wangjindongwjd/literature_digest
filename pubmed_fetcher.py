@@ -9,6 +9,7 @@ import time
 from typing import Any
 
 from Bio import Entrez
+from config import PUBMED_QUERY
 
 # NCBI requires a valid email address for Entrez API access
 Entrez.email = "2747245989@qq.com"
@@ -174,7 +175,7 @@ def fetch_daily_papers() -> list[dict[str, Any]]:
     list[dict[str, Any]]
         List of article detail dictionaries.
     """
-    pmids = search_pubmed("pollination")
+    pmids = search_pubmed(PUBMED_QUERY)
     if not pmids:
         print("No papers found in the past 24 hours.")
         return []
