@@ -1,13 +1,13 @@
 # ===============================================
-# 传粉方向 PubMed 文献日报 - 配置文件
+# PubMed Literature Daily Digest - Configuration
 # ===============================================
-# 设置: 复制 .env.example 为 .env 并填入你的信息
-# 切换邮箱: 只需改 EMAIL_PROVIDER (qq/gmail/163/outlook)
+# Settings: copy .env.example to .env and fill in your details
+# Email: just set EMAIL_PROVIDER (qq/gmail/163/outlook)
 
 import os
 from pathlib import Path
 
-# --- .env 文件加载（必须在读取任何配置之前） ---
+# --- .env loading (must run before reading any config) ---
 _ENV_FILE = Path(__file__).parent / ".env"
 if _ENV_FILE.exists():
     with open(_ENV_FILE, "r", encoding="utf-8") as _f:
@@ -25,38 +25,41 @@ if _ENV_FILE.exists():
             os.environ[_key] = _value
 
 # ===============================================
-# PubMed 检索
+# PubMed Search
 # ===============================================
 PUBMED_QUERY = os.getenv("PUBMED_QUERY", "pollination")
 PUBMED_RETMAX = int(os.getenv("PUBMED_RETMAX", "50"))
 PUBMED_DATABASE = "pubmed"
 
 # ===============================================
-# 翻译
+# Translation
 # ===============================================
 TRANSLATE_ENABLED = os.getenv("TRANSLATE_ENABLED", "false").lower() == "true"
 
 # ===============================================
-# 日志
+# Logging
 # ===============================================
 LOG_DIR = os.getenv("LOG_DIR", "logs")
 LOG_RETENTION_DAYS = int(os.getenv("LOG_RETENTION_DAYS", "7"))
 
 # ===============================================
-# 邮件主题
+# Email Subject
 # ===============================================
-EMAIL_SUBJECT_TEMPLATE = os.getenv("EMAIL_SUBJECT", "\U0001f4ec 传粉方向文献日报 - {date}")
+EMAIL_SUBJECT_TEMPLATE = os.getenv(
+    "EMAIL_SUBJECT",
+    "\U0001f4ec Daily Digest - {date}"
+)
 
-
 # ===============================================
-# 品牌/模板文案（邮件中显示的标题和关键词）
+# Email Branding (title / emoji / keyword in HTML)
 # ===============================================
-BRAND_TITLE = os.getenv("BRAND_TITLE", "传粉方向文献日报")
-BRAND_EMOJI = os.getenv("BRAND_EMOJI", "\U0001f41d")
+BRAND_TITLE = os.getenv("BRAND_TITLE", "Daily Literature Digest")
+BRAND_EMOJI = os.getenv("BRAND_EMOJI", "\U0001f4ec")
 BRAND_KEYWORD = os.getenv("BRAND_KEYWORD", "pollination")
-BRAND_EMPTY_MSG = os.getenv("BRAND_EMPTY_MSG", "暂无新的 pollination 方向文献")
+BRAND_EMPTY_MSG = os.getenv("BRAND_EMPTY_MSG", "No new papers today.")
+
 # ===============================================
-# 邮箱 SMTP（支持预设 + 手动）
+# Email SMTP (presets + manual override)
 # ===============================================
 _EMAIL_PRESETS = {
     "qq":      {"server": "smtp.qq.com",       "port": 465, "ssl": True},
@@ -77,11 +80,12 @@ else:
     SMTP_USE_SSL = os.getenv("SMTP_USE_SSL", "true").lower() == "true"
 
 # ===============================================
-# 邮箱账号
+# Email Accounts
 # ===============================================
 SENDER_EMAIL = os.getenv("SENDER_EMAIL", "")
 SENDER_PASSWORD = os.getenv("SENDER_PASSWORD", "")
-RECEIVER_EMAIL = [e.strip() for e in os.getenv("RECEIVER_EMAIL", os.getenv("SENDER_EMAIL", "")).split(",") if e.strip()]
-
-
-
+RECEIVER_EMAIL = [
+    e.strip() for e in
+    os.getenv("RECEIVER_EMAIL", os.getenv("SENDER_EMAIL", "")).split(",")
+    if e.strip()
+]

@@ -9,10 +9,10 @@ import time
 from typing import Any
 
 from Bio import Entrez
-from config import PUBMED_QUERY
+from config import PUBMED_QUERY, SENDER_EMAIL
 
 # NCBI requires a valid email address for Entrez API access
-Entrez.email = "2747245989@qq.com"
+Entrez.email = SENDER_EMAIL
 
 
 def search_pubmed(query: str, retmax: int = 50) -> list[str]:
@@ -202,3 +202,5 @@ if __name__ == "__main__":
         print(f"URL:    {paper['url']}")
         if paper['abstract']:
             print(f"Abstract (first 200 chars):\n  {paper['abstract'][:200]}...")
+
+
