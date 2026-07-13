@@ -3,7 +3,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-from config import SMTP_SERVER, SMTP_PORT, SMTP_USE_SSL, SENDER_EMAIL, SENDER_PASSWORD, RECEIVER_EMAIL
+from config import SMTP_SERVER, SMTP_PORT, SMTP_USE_SSL, SENDER_EMAIL, SENDER_PASSWORD, RECEIVER_EMAIL, BRAND_TITLE, BRAND_EMOJI, BRAND_KEYWORD, BRAND_EMPTY_MSG, BRAND_TITLE, BRAND_EMOJI, BRAND_KEYWORD, BRAND_EMPTY_MSG
 
 
 def build_html_digest(papers: list[dict], date: str) -> str:
@@ -66,13 +66,13 @@ def build_html_digest(papers: list[dict], date: str) -> str:
 <head><meta charset="utf-8"></head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; background: #fff;">
     <div style="text-align: center; padding: 20px 0; border-bottom: 2px solid #2c7be5; margin-bottom: 25px;">
-        <h1 style="color: #1a1a2e; margin: 0; font-size: 24px;">🐝 传粉方向文献日报</h1>
+        <h1 style="color: #1a1a2e; margin: 0; font-size: 24px;">🐝 {BRAND_TITLE}</h1>
         <p style="color: #6c757d; margin: 5px 0 0 0; font-size: 14px;">📅 {date} | 共检索到 <strong>{len(papers)}</strong> 篇新文献</p>
     </div>
     {items_html}
     <div style="text-align: center; padding: 20px; border-top: 1px solid #dee2e6; margin-top: 20px; color: #adb5bd; font-size: 12px;">
         <p>本日报由 Codex 自动化系统每日 12:00 推送</p>
-        <p>关键词: pollination | 数据源: PubMed</p>
+        <p>关键词: {BRAND_KEYWORD} | 数据源: PubMed</p>
     </div>
 </body>
 </html>"""
@@ -88,16 +88,16 @@ def build_empty_digest(date: str) -> str:
 <head><meta charset="utf-8"></head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; background: #fff;">
     <div style="text-align: center; padding: 20px 0; border-bottom: 2px solid #2c7be5; margin-bottom: 25px;">
-        <h1 style="color: #1a1a2e; margin: 0; font-size: 24px;">🐝 传粉方向文献日报</h1>
+        <h1 style="color: #1a1a2e; margin: 0; font-size: 24px;">🐝 {BRAND_TITLE}</h1>
         <p style="color: #6c757d; margin: 5px 0 0 0; font-size: 14px;">📅 {date}</p>
     </div>
     <div style="text-align: center; padding: 40px 20px; background: #f8f9fa; border-radius: 8px;">
-        <p style="font-size: 18px; color: #495057; margin: 0;">📭 今日暂无新的 pollination 方向文献</p>
+        <p style="font-size: 18px; color: #495057; margin: 0;">📭 今日{BRAND_EMPTY_MSG}</p>
         <p style="font-size: 14px; color: #adb5bd; margin: 10px 0 0 0;">请明天再查看</p>
     </div>
     <div style="text-align: center; padding: 20px; border-top: 1px solid #dee2e6; margin-top: 20px; color: #adb5bd; font-size: 12px;">
         <p>本日报由 Codex 自动化系统每日 12:00 推送</p>
-        <p>关键词: pollination | 数据源: PubMed</p>
+        <p>关键词: {BRAND_KEYWORD} | 数据源: PubMed</p>
     </div>
 </body>
 </html>"""
@@ -128,6 +128,7 @@ def send_email(html_content: str, subject: str) -> bool:
     except Exception as e:
         print(f"邮件发送失败: {e}")
         return False
+
 
 
 

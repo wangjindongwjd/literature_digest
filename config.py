@@ -47,6 +47,14 @@ LOG_RETENTION_DAYS = int(os.getenv("LOG_RETENTION_DAYS", "7"))
 # ===============================================
 EMAIL_SUBJECT_TEMPLATE = os.getenv("EMAIL_SUBJECT", "\U0001f4ec 传粉方向文献日报 - {date}")
 
+
+# ===============================================
+# 品牌/模板文案（邮件中显示的标题和关键词）
+# ===============================================
+BRAND_TITLE = os.getenv("BRAND_TITLE", "传粉方向文献日报")
+BRAND_EMOJI = os.getenv("BRAND_EMOJI", "\U0001f41d")
+BRAND_KEYWORD = os.getenv("BRAND_KEYWORD", "pollination")
+BRAND_EMPTY_MSG = os.getenv("BRAND_EMPTY_MSG", "暂无新的 pollination 方向文献")
 # ===============================================
 # 邮箱 SMTP（支持预设 + 手动）
 # ===============================================
@@ -74,5 +82,6 @@ else:
 SENDER_EMAIL = os.getenv("SENDER_EMAIL", "")
 SENDER_PASSWORD = os.getenv("SENDER_PASSWORD", "")
 RECEIVER_EMAIL = [e.strip() for e in os.getenv("RECEIVER_EMAIL", os.getenv("SENDER_EMAIL", "")).split(",") if e.strip()]
+
 
 
